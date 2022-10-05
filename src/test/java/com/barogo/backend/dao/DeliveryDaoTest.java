@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 public class DeliveryDaoTest {
@@ -42,5 +44,20 @@ public class DeliveryDaoTest {
         for (Delivery delivery : deliveryList) {
             Assertions.assertThat(delivery.getUserId()).isEqualTo(userId);
         }
+    }
+
+    @Test
+    @DisplayName("주소 변경 체크")
+    @Transactional
+    void testUpdateDeliveryEndAddr(){
+        Long deliveryId = 1L;
+        String changeEndAddr = "경기도 성남시 분당구";
+        int success = dao.updateDeliveryEndAddr(deliveryId, changeEndAddr);
+        Assertions.assertThat(success).isEqualTo(1);
+
+        Optional<Delivery> optionalDelivery = dao.findDeliveryById(deliveryId);
+        Assertions.assertThat(optionalDelivery.isPresent()).isTrue();
+        Delivery delivery = optionalDelivery.get();
+        Assertions.assertThat(delivery.getEndAddr()).isEqualTo(changeEndAddr);
     }
 }

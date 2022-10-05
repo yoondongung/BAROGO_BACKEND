@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -41,6 +43,25 @@ public class DeliveryServiceTest {
         Assertions.assertThat(deliveryList.size()).isEqualTo(2);
     }
 
+    @Test
+    @DisplayName("배송 조회")
+    void testDeliveryById() {
+        Long id = 1L;
+        when(deliveryDao.findDeliveryById(id)).thenReturn(Optional.of(getDelivery(null)));
+        Delivery delivery = deliveryService.getDeliveryById(1L);
+        Assertions.assertThat(delivery.getId()).isEqualTo(id);
+    }
+
+    @Test
+    @DisplayName("배송 도착 주소 업데이트")
+    void testUpdateDeliveryEndAddr(){
+        Long deliveryId = 1L;
+        String changeEndAddr = "경기도 성남시 분당구";
+        when(deliveryDao.findDeliveryById(deliveryId)).thenReturn(Optional.of(getDelivery(null)));
+        when(deliveryDao.updateDeliveryEndAddr(deliveryId, changeEndAddr)).thenReturn(1);
+        deliveryService.changeEndAddr(deliveryId, changeEndAddr);
+    }
+
     List<Delivery> getDeliveryList() {
         Delivery delivery = new Delivery();
         delivery.setId(1L);
@@ -59,5 +80,20 @@ public class DeliveryServiceTest {
         delivery2.setStatus(DeliveryStatus.DELIVERY);
 
         return Arrays.asList(delivery, delivery2);
+    }
+
+    Delivery getDelivery(String endAddr) {
+        Delivery delivery = new Delivery();
+        delivery.setId(1L);
+        delivery.setUserId("barogoUser1");
+        delivery.setStartTime(System.currentTimeMillis());
+        delivery.setStartAddr("경기도 용인시 수지구 상현동");
+        if(Objects.nonNull(endAddr)){
+            delivery.setEndAddr(endAddr);
+        }else{
+            delivery.setEndAddr("서울특별시 강남구 언주로134길 32");
+        }
+        delivery.setStatus(DeliveryStatus.WAIT);
+        return delivery;
     }
 }

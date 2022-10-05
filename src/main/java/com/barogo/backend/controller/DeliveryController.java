@@ -9,10 +9,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,5 +30,11 @@ public class DeliveryController {
 
         List<Delivery> deliveryList = deliveryService.getDeliveryList(userId, startTime, endTime);
         return deliveryList.stream().map(DeliveryDto::toDto).collect(Collectors.toList());
+    }
+
+    @PatchMapping(value = "/{deliveryId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateDelivery(@PathVariable("deliveryId") @NotNull Long deliveryId,
+                                @RequestBody @NotNull DeliveryDto deliveryDto) {
+        deliveryService.changeEndAddr(deliveryId, deliveryDto.getEndAddr());
     }
 }

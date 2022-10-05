@@ -21,4 +21,11 @@ public interface DeliveryService {
      * @return 배송 정보
      */
     Delivery getDeliveryById(Long id);
+
+    /**
+     * 도착 주소 업데이트
+     * @param id 배송id
+     * @param endAddr 도착 주소
+     */
+     void changeEndAddr(Long id, String endAddr);
 }
