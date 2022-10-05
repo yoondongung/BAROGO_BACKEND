@@ -1,8 +1,8 @@
 package com.barogo.backend.controller;
 
-import com.barogo.backend.domain.Delivery;
+import com.barogo.backend.domain.delivery.Delivery;
 import com.barogo.backend.dto.DeliveryDto;
-import com.barogo.backend.service.DeliveryService;
+import com.barogo.backend.service.delivery.DeliveryService;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
@@ -31,7 +31,7 @@ public class DeliveryController {
                                           @RequestParam("startTime") @NotNull Long startTime,
                                           @RequestParam("endTime") @NotNull Long endTime) {
 
-        List<Delivery> deliveryList = deliveryService.deliveryList(userId, startTime, endTime);
+        List<Delivery> deliveryList = deliveryService.getDeliveryList(userId, startTime, endTime);
         return deliveryList.stream().map(DeliveryDto::toDto).collect(Collectors.toList());
     }
 }

@@ -1,6 +1,8 @@
-package com.barogo.backend.service;
+package com.barogo.backend.service.user;
 
-import com.barogo.backend.domain.User;
+import com.barogo.backend.domain.user.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserService {
 
@@ -29,4 +31,6 @@ public interface UserService {
      * @param password 비밀번호
      */
     void isValidPassword(String password);
+
+     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }

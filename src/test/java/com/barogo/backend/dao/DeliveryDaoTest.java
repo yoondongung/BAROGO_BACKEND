@@ -1,7 +1,8 @@
 package com.barogo.backend.dao;
 
-import com.barogo.backend.domain.Delivery;
-import com.barogo.backend.domain.DeliveryStatus;
+import com.barogo.backend.dao.delivery.DeliveryDao;
+import com.barogo.backend.domain.delivery.Delivery;
+import com.barogo.backend.domain.delivery.DeliveryStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class DeliveryDaoTest {
 
     @Autowired

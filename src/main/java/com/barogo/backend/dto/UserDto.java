@@ -1,6 +1,6 @@
 package com.barogo.backend.dto;
 
-import com.barogo.backend.domain.User;
+import com.barogo.backend.domain.user.User;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;

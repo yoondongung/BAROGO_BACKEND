@@ -1,6 +1,6 @@
-package com.barogo.backend.dao;
+package com.barogo.backend.dao.user;
 
-import com.barogo.backend.domain.User;
+import com.barogo.backend.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

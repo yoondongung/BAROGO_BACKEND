@@ -1,4 +1,4 @@
-package com.barogo.backend.domain;
+package com.barogo.backend.domain.delivery;
 
 import lombok.Data;
 
@@ -12,7 +12,8 @@ import javax.persistence.Table;
 @Data
 public class Delivery {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
     private String userId;
     private Long startTime;

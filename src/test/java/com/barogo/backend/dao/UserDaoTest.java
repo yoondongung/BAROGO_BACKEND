@@ -1,6 +1,7 @@
 package com.barogo.backend.dao;
 
-import com.barogo.backend.domain.User;
+import com.barogo.backend.dao.user.UserDao;
+import com.barogo.backend.domain.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class UserDaoTest {
 
     @Autowired

@@ -1,7 +1,10 @@
 package com.barogo.backend.controller;
 
+import com.barogo.backend.dto.JwtInfo;
 import com.barogo.backend.dto.UserDto;
-import com.barogo.backend.service.UserService;
+import com.barogo.backend.dto.UserRequest;
+import com.barogo.backend.service.login.LoginService;
+import com.barogo.backend.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
@@ -19,10 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LoginController {
 
+    private final LoginService loginService;
+
     private final UserService userService;
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void login(@RequestBody UserDto userDto) {
+    @PostMapping("/sign-in")
+    public JwtInfo.Response login(@RequestBody UserRequest request) {
+        return loginService.login(request);
+    }
 
+    @PostMapping(value = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void registerUser(@RequestBody UserDto userDto) {
+        userService.registerUser(userDto.toDomain());
     }
 }

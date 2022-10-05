@@ -1,8 +1,7 @@
 package com.barogo.backend.dto;
 
-import com.barogo.backend.domain.Delivery;
-import com.barogo.backend.domain.DeliveryStatus;
-import com.barogo.backend.domain.User;
+import com.barogo.backend.domain.delivery.Delivery;
+import com.barogo.backend.domain.delivery.DeliveryStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;

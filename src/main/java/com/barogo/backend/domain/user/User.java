@@ -1,4 +1,4 @@
-package com.barogo.backend.domain;
+package com.barogo.backend.domain.user;
 
 import lombok.Data;
 
@@ -17,4 +17,5 @@ public class User implements Serializable {
     private String password;
     private String userName;
     private String email;
+
 }

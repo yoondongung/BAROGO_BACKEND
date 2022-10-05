@@ -1,7 +1,7 @@
 package com.barogo.backend.controller;
 
 import com.barogo.backend.dto.UserDto;
-import com.barogo.backend.service.UserService;
+import com.barogo.backend.service.user.UserService;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public void registerUser(@RequestBody UserDto userDto) {
-        userService.registerUser(userDto.toDomain());
-    }
 
     @GetMapping(value = "/check-pw", produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean checkUserPassword(@RequestParam("userPw") @NotNull String userPw) {

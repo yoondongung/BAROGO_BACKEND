@@ -1,33 +1,39 @@
 package com.barogo.backend.controller;
 
-import com.barogo.backend.dto.UserDto;
-import com.barogo.backend.service.UserService;
+import com.barogo.backend.configuration.security.JwtTokenProvider;
+import com.barogo.backend.configuration.security.SecurityConfig;
+import com.barogo.backend.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
-        controllers = UserController.class
+        controllers = UserController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+        }
 )
-@ActiveProfiles("test")
 public class UserControllerTest {
 
-    private final static String REGISTER_USER_URI = "/barogo/users";
+    private final static String BASE_URI = "/barogo/users";
     private final static String CHECK_PW_URI = "/barogo/users/check-pw";
 
     @MockBean
@@ -39,29 +45,24 @@ public class UserControllerTest {
     @Autowired
     ObjectMapper mapper;
 
-    @Test
-    @DisplayName("User 등록 URI 체크")
-    void testRegisterUser() throws Exception {
-        this.mvc.perform(post(REGISTER_USER_URI)
-                        .content(mapper.writeValueAsString(registerUserDto()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+    @SpyBean
+    JwtTokenProvider tokenProvider;
+    private String testTokenBearer;
+    private String testToken;
 
-    @Test
-    @DisplayName("User 등록 URI Body정보가 없을 경우 체크")
-    void testRegisterUserNotBody() throws Exception {
-        this.mvc.perform(post(REGISTER_USER_URI)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().is5xxServerError());
+    @BeforeEach
+    void setUp() {
+        testToken = tokenProvider.generateToken("test");
+        testTokenBearer = "Bearer " + testToken;
     }
 
     @Test
     @DisplayName("패스워드 정합성 체크 URI 체크")
+    @WithMockUser
     void testCheckUserPassword() throws Exception {
         this.mvc.perform(get(CHECK_PW_URI)
+                        .header("Authorization", testTokenBearer)
+                        .with(csrf())
                         .param("userPw", "barogoUser!!")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -70,8 +71,11 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("패스워드 정합성 체크 URI 파라미터가 없을 경우 체크")
+    @WithMockUser
     void testCheckUserPasswordNotParam() throws Exception {
         this.mvc.perform(get(CHECK_PW_URI)
+                        .header("Authorization", testTokenBearer)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is5xxServerError());
@@ -80,9 +84,12 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("패스워드 정합성 체크 성공 리턴 값 체크")
+    @WithMockUser
     void testCheckUserPasswordResponse() throws Exception {
         String pw = "barogoUser!!";
         MvcResult result = this.mvc.perform(get(CHECK_PW_URI)
+                        .header("Authorization", testTokenBearer)
+                        .with(csrf())
                         .param("userPw", pw)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -90,14 +97,5 @@ public class UserControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
         Assertions.assertTrue(mapper.readValue(response.getContentAsString(), Boolean.class));
-    }
-
-    private UserDto registerUserDto(){
-        UserDto dto = new UserDto();
-        dto.setUserId("barogoUser1");
-        dto.setPassword("barogoUser1");
-        dto.setUserName("바로고테스트유저");
-        dto.setEmail("barogo@barogo.com");
-        return dto;
     }
 }
